@@ -4,3 +4,4 @@ BME Senior Design Project
 LIBRARIES NEEDED:
 - numpy
 - openCV
+- math
