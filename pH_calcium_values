@@ -1,3 +1,8 @@
+"""
+Created on Thu Nov 16 15:41:25 2023
+
+@author: Andrea & Kathryn
+"""
 def pH_calcium_values(pH_location, calcium_location):
     if pH_location == 0:
         pH = 5.0
@@ -17,5 +22,26 @@ def pH_calcium_values(pH_location, calcium_location):
     print("Your urine pH value is " + pH)
     if pH < 6:
         print("Your pH is low.")
-    else 
+    else: 
         print("Your pH is normal.")
+    
+    if calcium_location == 0:
+        ca = 0.1
+    if else calcium_location == 1:
+        ca = 2.5
+    if else calcium_location == 2:
+        ca = 5.0
+    if else calcium_location == 3:
+        ca = 7.5
+    if else calcium_location == 4:
+        ca = 10
+        
+    print("Your urine calcium value is" + ca)
+    if ca < 1.25:
+        print("Your calcium is low.")
+    if else ca > 3.75:
+        print("Your calcium is high.")
+    else:
+        print("Your calcium is normal.")
+    
+    
