@@ -7,6 +7,8 @@ import numpy as np
 import mapper
 import scanner
 import location_script
+import color_compare
+import pH_calcium_values
 
 filename = input('Filename: ')
 
