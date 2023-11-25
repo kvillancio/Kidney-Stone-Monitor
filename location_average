@@ -1,0 +1,105 @@
+from PIL import Image
+
+# Location function for calibration chart
+def locate_pH(filename):
+    # Open image
+    image = Image.open(filename)
+    # Initialize rgb for pH
+    rgb1 = []
+    # Initialize starting position
+    x1 = image.width
+    y1 = image.height
+    # Iterate over every pixel from right to left until the color is not white
+    # Return horizontal position of the first column
+    for y in range(y1 - 1):
+        for x in range(x1 - 1, 0, -1):
+            # Get the pixel color at the current position
+            pixel_color = image.getpixel((x, y))
+            if abs(pixel_color[0] - pixel_color[1]) > 15 and abs(pixel_color[0] - pixel_color[2]) > 15 and abs(pixel_color[1] - pixel_color[2]) > 15:
+                x1 = x-20  # Save the x position for pH and shift more towards center of the block
+                y1 = y+10 #shift towards center of the block
+                break
+        if abs(pixel_color[0] - pixel_color[1]) > 15  and abs(pixel_color[0] - pixel_color[2]) > 15 and abs(pixel_color[1] - pixel_color[2]) > 15:
+            break
+
+    # Iterate vertically through found column and store RGB values for each block
+    for i in range(7):
+        rgb_temp = []
+        for y in range(y1, image.height):
+            # Get the pixel color at the current position
+            pixel_color = image.getpixel((x1, y))
+            if abs(pixel_color[0] - pixel_color[1]) < 12 and abs(pixel_color[0] - pixel_color[2]) < 12 and abs(pixel_color[1] - pixel_color[2]) < 12:
+                while i != 6 and abs(pixel_color[0] - pixel_color[1]) < 12 and abs(pixel_color[0] - pixel_color[2]) < 12 and abs(pixel_color[1] - pixel_color[2]) < 12:
+                    y = y + 1
+                    y1 = y
+                    pixel_color = image.getpixel((x1,y))   
+                break
+            if abs(pixel_color[0] - pixel_color[1]) >= 5 and abs(pixel_color[0] - pixel_color[2]) >= 5 and abs(pixel_color[1] - pixel_color[2]) >= 7:
+                pixel_color = image.getpixel((x1, y))
+                rgb_temp.append(pixel_color)
+
+        if rgb_temp:
+            # Compute average color for a column in one block
+            red = [temp[0] for temp in rgb_temp]
+            green = [temp[1] for temp in rgb_temp]
+            blue = [temp[2] for temp in rgb_temp]
+            # Calculate averages for RGB separately
+            rgb1.append([sum(red) // len(red), sum(green) // len(green), sum(blue) // len(blue), 255])
+
+    return rgb1
+
+
+# Location function for calicum calibration chart
+def locate_Ca(filename):
+    # Open image
+    image = Image.open(filename)
+    # Initialize rgb for pH
+    rgb1 = []
+    # Initialize starting position
+    x1 = image.width
+    y1 = image.height
+
+    # Iterate over every pixel from left to right until the color is not white
+    # Return horizontal position of the first column
+    for y in range(y1 - 1):
+        """
+        print(y)
+        """
+        for x in range(x1 - 1):
+            # Get the pixel color at the current position
+            """
+            print(f'x: {x} y: {y}')
+            """
+            pixel_color = image.getpixel((x, y))
+            if abs(pixel_color[0] - pixel_color[1]) >= 5 and abs(pixel_color[0] - pixel_color[2]) >= 6 and abs(pixel_color[1] - pixel_color[2]) >= 3: 
+                x1 = x+20  # Save the x position for Ca and shift more towards center of the block
+                y1 = y+15 #shift towards center of the block
+                break
+        if abs(pixel_color[0] - pixel_color[1]) >= 5 and abs(pixel_color[0] - pixel_color[2]) >= 6 and abs(pixel_color[1] - pixel_color[2]) >= 2:
+                break
+
+    # Iterate vertically through found column and store RGB values for each block
+    for i in range(5):
+        rgb_temp = []
+        for y in range(y1, image.height):
+            # Get the pixel color at the current position
+            pixel_color = image.getpixel((x1, y))
+            if abs(pixel_color[0] - pixel_color[1]) < 6 and abs(pixel_color[0] - pixel_color[2]) < 6 and abs(pixel_color[1] - pixel_color[2]) < 6:
+                while i != 4 and abs(pixel_color[0] - pixel_color[1]) < 6 and abs(pixel_color[0] - pixel_color[2]) < 6 and abs(pixel_color[1] - pixel_color[2]) < 6:
+                    y = y + 1
+                    y1 = y
+                    pixel_color = image.getpixel((x1,y))   
+                break
+            if abs(pixel_color[0] - pixel_color[1]) >= 5 and abs(pixel_color[0] - pixel_color[2]) >= 6 and abs(pixel_color[1] - pixel_color[2]) >= 2:
+                pixel_color = image.getpixel((x1, y))
+                rgb_temp.append(pixel_color)
+
+        if rgb_temp:
+            # Compute average color for a column in one block
+            red = [temp[0] for temp in rgb_temp]
+            green = [temp[1] for temp in rgb_temp]
+            blue = [temp[2] for temp in rgb_temp]
+            # Calculate averages for RGB separately
+            rgb1.append([sum(red) // len(red), sum(green) // len(green), sum(blue) // len(blue), 255])
+
+    return rgb1
