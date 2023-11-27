@@ -1,0 +1,41 @@
+# import libraries
+from PIL import Image
+#input file C:\Users\19413\Downloads\new_test_calibration_chart.png
+"""
+import cv2
+import numpy as np
+"""
+
+# import function scripts
+"""
+import mapper
+import scanner
+import color_compare
+import pH_calcium_values
+"""
+
+import location_script
+
+filename = input('Filename: ')
+
+# scan and crop 
+"""
+scanned_img = scanner.scan(filename)
+"""
+
+# locate strip and calibration
+"""
+average_pH_calibration = location_script.locate_pH(filename)
+average_Ca_calibration = location_script.locate_Ca(filename)
+"""
+sat_image = location_script.saturate_colors(filename, 1.7)
+sat_image.show()
+new_image = location_script.grayscale_to_white(sat_image)
+new_image.show()
+
+#average_strip = location_script.locate_strip(filename)
+"""
+print(average_pH_calibration)
+print(average_Ca_calibration)
+#print(average_strip)
+"""
