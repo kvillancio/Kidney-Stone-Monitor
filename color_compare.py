@@ -16,14 +16,21 @@ COLORS = (
 )
 
 ##this code came from stack overflow by mVCHr and edited by Adam Jenca
-def closest_color(rgb):
+def closest_color(rgb, efj):
     r, g, b = rgb
-    color_diffs = []
-    for color in COLORS:
+    e, f, j = efj
+    color_diffs_calcium = []
+    for color in COLORS: 
         cr, cg, cb = color
         color_diff = math.sqrt((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
-        color_diffs.append((color_diff, color))
-    return min(color_diffs)[1]
+        color_diffs_calcium.append((color_diff, color))
+    color_diffs_pH = []
+    for color in COLORS:
+        ce, cf, cj = color
+        color_diff = math.sqrt((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
+        color_diffs_pH.append((color_diff, color))
+    return min(color_diffs_calcium)[1], min(color_diffs_pH)[1]
+
 
 
 
