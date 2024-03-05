@@ -1,3 +1,4 @@
+#run with: pH_color_averages, ca_color_averages = location.ph_and_Ca_calibration_finder(image) 
 from PIL import Image, ImageEnhance
 import cv2
 import numpy as np
@@ -106,3 +107,4 @@ def ph_and_Ca_calibration_finder(image):
     print("pH color averages:", pH_color_averages)
     ca_color_averages = find_Ca(edges, image_bgr)
     print("Ca color averages:", ca_color_averages)
+    return pH_color_averages, ca_color_averages
