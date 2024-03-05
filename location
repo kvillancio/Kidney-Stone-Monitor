@@ -1,0 +1,108 @@
+from PIL import Image, ImageEnhance
+import cv2
+import numpy as np
+import os
+
+def preprocess_image(image):
+    # Convert NumPy array to PIL Image
+    pil_image = Image.fromarray(image)
+    contrast_enhancer = ImageEnhance.Contrast(pil_image)
+    contrast_enhanced_image = contrast_enhancer.enhance(1.5)
+
+    # Convert the enhanced image back to NumPy array
+    np_contrast_enhanced = np.array(contrast_enhanced_image)
+    lab_image = cv2.cvtColor(np_contrast_enhanced, cv2.COLOR_BGR2LAB)
+    l_channel, a_channel, b_channel = cv2.split(lab_image)
+    l_channel_equalized = cv2.equalizeHist(l_channel)
+    equalized_lab_image = cv2.merge((l_channel_equalized, a_channel, b_channel))
+    equalized_color_image = cv2.cvtColor(equalized_lab_image, cv2.COLOR_LAB2BGR)
+
+    blurred = cv2.GaussianBlur(equalized_color_image, (9, 9), 0) 
+    return blurred
+
+def find_pH(segmented_image, original_image):
+    height, width = segmented_image.shape[:2]
+    pH_color_averages = []
+    break_all = False
+    
+    # Find the start row
+    for row in range(height):
+        for col in range(width - 1, -1, -1):
+            if segmented_image[row, col] == 255:
+                squareTop_row = row
+                col = col - 10
+                break_all = True
+                break
+        if break_all:
+            break
+    
+    start = squareTop_row            
+    
+    # Iterate through the image and compute averages
+    for row in range(start + 2, height):
+        if segmented_image[row, col] == 255 and squareTop_row != 0:
+            squareBottom_row = row
+            # Compute average R, G, B values for the area
+            roi = original_image[squareTop_row:squareBottom_row, col:col+2]
+            r_avg = roi[..., 0].mean()
+            g_avg = roi[..., 1].mean()
+            b_avg = roi[..., 2].mean()
+            # Append the averages to the pH_color_averages list
+            pH_color_averages.append([r_avg, g_avg, b_avg])
+            squareTop_row = 0
+            start = start + 2
+        elif segmented_image[row, col] == 255:
+            squareTop_row = row
+
+    return pH_color_averages
+
+def find_Ca(segmented_image, original_image):
+    height, width = segmented_image.shape[:2]
+    Ca_color_averages = []
+    break_all = False
+    
+    # Find the start row
+    for row in range(0,height):
+        for col in range(0,width):
+            if segmented_image[row, col] == 255:
+                squareTop_row = row
+                print(squareTop_row)
+                col = col + 10
+                break_all = True
+                break
+        if break_all:
+            break
+    
+    start = squareTop_row            
+    
+    # Iterate through the image and compute averages
+    for row in range(start + 2, height):
+        if segmented_image[row, col] == 255 and squareTop_row != 0:
+            squareBottom_row = row
+            # Compute average R, G, B values for the area
+            roi = original_image[squareTop_row:squareBottom_row, col:col+2]
+            r_avg = roi[..., 0].mean()
+            g_avg = roi[..., 1].mean()
+            b_avg = roi[..., 2].mean()
+            # Append the averages to the pH_color_averages list
+            Ca_color_averages.append([r_avg, g_avg, b_avg])
+            squareTop_row = 0
+            start = start + 2
+        elif segmented_image[row, col] == 255:
+            squareTop_row = row
+    return Ca_color_averages
+
+
+def ph_and_Ca_calibration_finder(image):
+    resized_image = cv2.resize(image, (1000, 1000))
+    image_bgr = cv2.cvtColor(resized_image, cv2.COLOR_RGB2BGR)
+    cv2.imshow("Pre-processed Image", resized_image)
+    processed_image = preprocess_image(resized_image)
+    cv2.imshow("Processed Image", processed_image)
+    # Use Canny edge detection to find edges
+    edges = cv2.Canny(processed_image, 50, 150)
+    cv2.imshow("Edges", edges)
+    pH_color_averages = find_pH(edges, image_bgr)
+    print("pH color averages:", pH_color_averages)
+    ca_color_averages = find_Ca(edges, image_bgr)
+    print("Ca color averages:", ca_color_averages)
