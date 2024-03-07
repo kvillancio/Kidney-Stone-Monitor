@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import math
 
 # COLORS = (
@@ -30,7 +29,9 @@ def closest_color(cal_strip, pH_strip, cal_chart):
         ce, cf, cj = color
         color_diff = math.sqrt((r_pH - cr)**2 + (g_pH - cg)**2 + (b_pH - cb)**2)
         color_diffs_pH.append((color_diff, color))
-    return min(color_diffs_calcium)[1], min(color_diffs_pH)[1]
+        closest_calcium = min(color_diffs_calcium)[1]
+        closest_pH = min(color_diffs_pH)[1]
+        return color_diffs_calcium.index(closest_calcium)+1, color_diffs_pH.index(closest_pH)+1
 
 
 
