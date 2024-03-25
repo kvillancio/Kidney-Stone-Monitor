@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def ph_strip_finder(filename):
     # Load image
@@ -15,7 +16,7 @@ def ph_strip_finder(filename):
     for x in range(500,w):
         for y in range(h):
             col = img[y, x, :]
-            if col[0] <= 60:  # x > 500 is for the dust particle
+            if col[0] <= 100:  # x > 500 is for the dust particle
                 status = 1
                 break
         if status == 1:
@@ -28,7 +29,7 @@ def ph_strip_finder(filename):
     
     # Loop to collect RGB values to the right of the detected point
     for j in range(2):
-        for i in range(100, 121):
+        for i in range(60, 70):
             col_up = img[y + j, x + i, :]
             r.append(col_up[0])
             g.append(col_up[1])
@@ -43,7 +44,7 @@ def ph_strip_finder(filename):
     
     print("Average pH RGB Values:", avg_ph_col)
     
-    return avg_ph_col
+    return avg_ph_col,x,y
 
 def calc_strip_finder(filename):
     # Load image
@@ -59,10 +60,10 @@ def calc_strip_finder(filename):
     for x in range(500,w):
         for y in range(h):
             col = img[y, x, :]
-            if col[0] <= 60:  # Check if the red component is dark
-                for y2 in range(y+5,h):
+            if col[0] <= 100:  # found pH line
+                for y2 in range(y+5,h): # jump down to find calcium line
                     col = img[y2, x+5, :]
-                    if col[0] <= 60:
+                    if col[0] <= 100:
                         status = 1;
                         break
         if status == 1:
@@ -75,7 +76,7 @@ def calc_strip_finder(filename):
     
     # Loop to collect RGB values to the right of the detected point
     for j in range(2):
-        for i in range(100, 121):
+        for i in range(60, 70):
             col_up = img[y2 + j, x + i, :]
             r.append(col_up[0])
             g.append(col_up[1])
@@ -91,8 +92,8 @@ def calc_strip_finder(filename):
     
     print("Average Calcium RGB Values:", avg_calc_col)
     
-    return avg_calc_col
+    return avg_calc_col,x,y2
 
-filename = 'strip_line_test.jpg'
-ph_rgb = ph_strip_finder(filename)
-calc_rgb = calc_strip_finder(filename)
+filename = 'new doc 2024-03-19 12.42.28n_8.jpg'
+[ph_rgb,x,y] = ph_strip_finder(filename)
+[calc_rgb,x2,y2] = calc_strip_finder(filename)
