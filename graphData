@@ -1,0 +1,57 @@
+"""
+Created on Fri Feb 23 15:34:46 2024
+
+@author: Kathryn
+"""
+import matplotlib.pyplot as plt
+from datetime import date
+
+def getDayMonth(day_array): #this saves the current day on your laptop and appends it to an array. Also gets the month
+    today_obj = date.today()
+    day = today_obj.day
+    month = today_obj.month
+    day_array.append(day)
+    return day_array, day, month
+
+
+def plottingPoints(pH_array, Ca_array, day_array):
+    
+    day_array, day, month = getDayMonth(day_array)
+    plt.figure(figsize=(10, 8))
+    
+    #Finding the month for the plot titles
+    month_list = [[1, 'January'], [2, 'February'], [3, 'March'], [4, 'April'], [5, 'May'],
+                  [6, 'June'], [7, 'July'], [8, 'August'], [9, 'September'], [10, 'October'], 
+                  [11, 'November'], [12, 'December']]
+    for num, name in month_list:
+        if month == num:
+            month_string = name
+    
+    #plotting pH
+    plt.subplot(211)
+    plt.scatter(day_array, pH_array)
+    plt.xlabel("Day")
+    plt.ylabel("pH values")
+    plt.title(f"Your pH levels for {month_string}")
+    plt.xticks(range(1,32))
+    #plotting calcium
+    plt.subplot(212)
+    plt.scatter(day_array, Ca_array)
+    plt.xlabel("Day")
+    plt.ylabel("Calcium values")
+    plt.title(f"Your Calcium levels for {month_string}")
+    plt.xticks(range(1,32))
+    
+
+    plt.tight_layout()  # Adjust subplots to prevent overlapping
+    
+    plt.show()
+
+#below is an example of it working
+def main():
+    pH_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,7] #hard coding
+    calcium_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2.5] #hard coding
+    day_array = list(range(1,29)) #hard coding, list 1-28 so the getDayMonth() adds day 29 (when I tested this the day was the 29th on my laptop)
+    plottingPoints(pH_array, calcium_array, day_array)
+    
+main()
