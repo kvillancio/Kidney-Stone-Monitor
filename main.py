@@ -17,7 +17,7 @@ strip_ca = strip.calc_strip_finder(filename)
 
 # locate calibration chart
 img = cv2.imread(filename)
-[chart_ph,chart_ca] = chart.ph_and_Ca_calibration_finder(img)
+[chart_ph,chart_ca] = chart.ph_and_ca_calibration_finder(img)
 
 # compare colors
 [diff_ph, diff_ca]=compare.comp(strip_ca, strip_ph,chart_ph,chart_ca)
