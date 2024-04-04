@@ -4,28 +4,22 @@ import cv2
 import numpy as np
 
 # import function scripts
-import mapper
-import scanner
-import location_script
-import color_compare
-import pH_calcium_values
+import chart_location as chart
+import test_strip_finder as strip
+import color_compare as compare
+# import scaling
 
-filename = input('Filename: ')
+filename = '1mb_test.jpg'
 
-# scan and crop image
-scanned_img = scanner.scan(filename)
+# locate strip
+strip_ph = strip.ph_strip_finder(filename)
+strip_ca = strip.calc_strip_finder(filename)
 
-# locate strip and calibration
-[strip_ph, strip_ca] = location_script.strip(scanned_img)
-[cal_ph, cal_ca] = location_script.cal(scanned_img)
+# locate calibration chart
+img = cv2.imread(filename)
+[chart_ph,chart_ca] = chart.ph_and_Ca_calibration_finder(img)
 
 # compare colors
-ph_comp = color_compare.comp(strip_ph, cal_ph)
-ca_comp = color_compare.comp(strip_ca, cal_ca)
+[diff_ph, diff_ca]=compare.comp(strip_ca, strip_ph,chart_ph,chart_ca)
 
-# find pH and calcium values
-[pH, calc] = pH_calcium_values.vals(ph_comp, ca_comp)
 
-print('Results from urine sample:')
-print('pH: ' + pH)
-print('Calcium concentration: ' + calc + ' mmol/day')
