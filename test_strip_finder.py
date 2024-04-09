@@ -13,7 +13,7 @@ def ph_strip_finder(filename):
     status = 0
     
     # Loop to detect dark line next to pH square
-    for x in range(600,w):
+    for x in range(250,w):
         for y in range(h):
             col = img[y, x, :]
             if col[0] <= 100:  # x > 500 is for the dust particle
@@ -30,8 +30,8 @@ def ph_strip_finder(filename):
     #print(x,y)
     
     # Loop to collect RGB values to the right of the detected point
-    for j in range(3):
-        for i in range(140, 180):
+    for j in range(2):
+        for i in range(30, 40):
             col_up = img[y + j, x + i, :]
             r.append(col_up[0])
             g.append(col_up[1])
@@ -59,12 +59,12 @@ def calc_strip_finder(filename):
     status = 0
     
     # Loop to detect dark line
-    for x in range(600,w):
+    for x in range(250,w):
         for y in range(h):
             col = img[y, x, :]
             if col[0] <= 100:  # found pH line
-                for y2 in range(y+50,h): # jump down to find calcium line
-                    col = img[y2, x+5, :]
+                for y2 in range(y+40,h): # jump down to find calcium line
+                    col = img[y2, x+3, :]
                     if col[0] <= 100:
                         status = 1;
                         break
@@ -80,7 +80,7 @@ def calc_strip_finder(filename):
     
     # Loop to collect RGB values to the right of the detected point
     for j in range(2):
-        for i in range(140, 180):
+        for i in range(30, 40):
             col_up = img[y2 + j, x + i, :]
             r.append(col_up[0])
             g.append(col_up[1])
