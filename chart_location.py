@@ -101,7 +101,7 @@ def visualize_kernels(segmented_image, kernel_list):
     plt.xlabel('Column')
     plt.ylabel('Row')
     plt.title('Kernels On the Segmented Image')
-    plt.show()
+    #plt.show()
 
 def get_average_rgb_from_kernels(kernel_list, original_image):
     average_rgb_values = []
@@ -117,7 +117,7 @@ def get_ph_and_ca_calibration_values(filename):
     segmented_image = segment(processed_image)
     plt.imshow(segmented_image, cmap='gray')
     plt.title('Segmented Image')
-    plt.show()
+    #plt.show()
     print()
     height, width = segmented_image.shape[:2]
     ph_kernels = []

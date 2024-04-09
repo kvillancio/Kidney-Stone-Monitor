@@ -27,7 +27,7 @@ def ph_strip_finder(filename):
     g = []
     b = []
     
-    print(x,y)
+    #print(x,y)
     
     # Loop to collect RGB values to the right of the detected point
     for j in range(3):
@@ -44,9 +44,9 @@ def ph_strip_finder(filename):
     # Calculate average RGB values
     avg_ph_col = [np.mean(b), np.mean(g), np.mean(r)]
     
-    print("Average pH RGB Values:", avg_ph_col)
+    #print("Average pH RGB Values:", avg_ph_col)
     
-    return avg_ph_col,x,y
+    return avg_ph_col
 
 def calc_strip_finder(filename):
     # Load image
@@ -76,7 +76,7 @@ def calc_strip_finder(filename):
     g = []
     b = []
     
-    print(x,y2)
+    #print(x,y2)
     
     # Loop to collect RGB values to the right of the detected point
     for j in range(2):
@@ -94,7 +94,7 @@ def calc_strip_finder(filename):
     # Calculate average RGB values
     avg_calc_col = [np.mean(b), np.mean(g), np.mean(r)]
     
-    print("Average Calcium RGB Values:", avg_calc_col)
+    #print("Average Calcium RGB Values:", avg_calc_col)
     
-    return avg_calc_col,x,y2
+    return avg_calc_col
 
