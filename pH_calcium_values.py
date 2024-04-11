@@ -15,14 +15,19 @@ def pH_calcium_values(pH_location, calcium_location):
         pH = 8.5
 
     if pH_location==6:
+        print('')
         print("Your urine pH value is " + str(pH) + " or higher")
     elif pH_location==0:
+         print('')
          print("Your urine pH value is " + str(pH) + " or lower")
     else:
+        print('')
         print("Your urine pH value is " + str(pH))
     if pH < 6:
+        print('')
         print("Your pH is low.")
-    else: 
+    else:
+        print('')
         print("Your pH is normal.")
     
     if calcium_location == 0:
@@ -39,22 +44,27 @@ def pH_calcium_values(pH_location, calcium_location):
 
     #get reference number from scaling function
     Ca_ref=scaling_Ca();
-    
+
+    print('')
     print("Your urine calcium value is " + str(ca))
     if ca < Ca_ref:
+        print('')
         print("Your calcium is normal.")
     elif ca > Ca_ref:
+        print('')
         print("Your calcium is high.")
 
 
     return pH, ca
 
 def scaling_Ca():
+        print('')
         sex = input("Enter your sex (male or female): ")
+        print('')
         weight = float(input("Enter your weight (kg): "))
+        print('')
         if sex == "male":
             Ca_ref = (0.3119) / (0.05 * weight * 0.0205)
         elif sex == "female":
             Ca_ref = (0.2495) / (0.05 * weight * 0.0205)
-        print(Ca_ref)
         return Ca_ref
