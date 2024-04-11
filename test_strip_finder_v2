@@ -1,0 +1,156 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def read_and_resize(filename):
+    img = cv2.imread(filename)
+    resized_img_bgr = cv2.resize(img, dsize=(850,900))
+    resized_img = cv2.cvtColor(resized_img_bgr, cv2.COLOR_BGR2RGB)
+    h, w, _ = resized_img.shape
+    plt.imshow(resized_img, cmap='gray')
+    plt.title('resized image')
+    plt.show()
+    return resized_img, h, w
+
+def normalize_color(color):
+    return tuple(int(max(0, min(255, c))) for c in color)
+
+def ph_strip_finder(resized_img, h, w):
+    # Status variable for loop
+    status = 0
+    for x in range(w-1):
+        for y in range(h-1):
+            color = resized_img[y, x, :]
+            if abs(color[0] - color[1]) > 10 and abs(color[0] - color[2]) > 10 and y < 500: 
+                status = 1
+                break  
+        if status == 1:
+            break
+    # Plot the resized image
+    plt.imshow(resized_img)
+    plt.scatter(x, y, color='red', marker='x', s=100)
+    plt.show()
+
+    # Initialize lists to store RGB values
+    r = []
+    g = []
+    b = []
+
+    # Define the coordinates of the center of the kernel
+    kernel_center_y = y - 5
+    kernel_center_x = x + 80
+
+    kernel_list = [(kernel_center_y - 2, kernel_center_y + 3, kernel_center_x - 2, kernel_center_x + 3)]
+    
+    visualize_kernels(resized_img, kernel_list)
+        
+    # Initialize variables to store total RGB values
+    total_r = 0
+    total_g = 0
+    total_b = 0
+
+    # Iterate over the kernel coordinates
+    for min_row, max_row, min_col, max_col in kernel_list:
+        # Iterate over the pixels within the kernel
+        for y in range(min_row, max_row):
+            for x in range(min_col, max_col):
+                # Get RGB values at each kernel coordinate
+                col = resized_img[y, x, :]
+                # Accumulate RGB values
+                total_r += col[0]
+                total_g += col[1]
+                total_b += col[2]
+
+    # Calculate the total number of pixels within the kernels
+    num_pixels = (max_row - min_row) * (max_col - min_col) * len(kernel_list)
+
+    # Calculate overall average RGB values
+    overall_average_r = total_r / num_pixels
+    overall_average_g = total_g / num_pixels
+    overall_average_b = total_b / num_pixels
+
+    # Print the overall average RGB values
+    print("Overall average RGB values:")
+    print(f"R={overall_average_r:.2f}, G={overall_average_g:.2f}, B={overall_average_b:.2f}")
+    avg_ph_col = [overall_average_r, overall_average_g, overall_average_b]
+
+    return avg_ph_col
+
+def calc_strip_finder(resized_img, h, w):
+    status = 0
+    for x in range(w-1):
+        for y in range(h-1, 0, -1):
+            color = resized_img[y, x, :]
+            if abs(color[0] - color[1]) > 10 and abs(color[1] - color[2]) > 10 and  y > 500: 
+                status = 1
+                break
+        if status == 1:
+            break
+    # Plot the resized image
+    plt.imshow(resized_img)
+    plt.scatter(x, y, color='red', marker='x', s=100)
+    plt.show()
+
+    # Initialize lists to store RGB values
+    r = []
+    g = []
+    b = []
+
+    # Define the coordinates of the center of the kernel
+    kernel_center_y = y - 5
+    kernel_center_x = x + 80
+
+    kernel_list = [(kernel_center_y - 2, kernel_center_y + 3, kernel_center_x - 2, kernel_center_x + 3)]
+    
+    visualize_kernels(resized_img, kernel_list)
+        
+    # Initialize variables to store total RGB values
+    total_r = 0
+    total_g = 0
+    total_b = 0
+
+    # Iterate over the kernel coordinates
+    for min_row, max_row, min_col, max_col in kernel_list:
+        # Iterate over the pixels within the kernel
+        for y in range(min_row, max_row):
+            for x in range(min_col, max_col):
+                # Get RGB values at each kernel coordinate
+                col = resized_img[y, x, :]
+                # Accumulate RGB values
+                total_r += col[0]
+                total_g += col[1]
+                total_b += col[2]
+
+    # Calculate the total number of pixels within the kernels
+    num_pixels = (max_row - min_row) * (max_col - min_col) * len(kernel_list)
+
+    # Calculate overall average RGB values
+    overall_average_r = total_r / num_pixels
+    overall_average_g = total_g / num_pixels
+    overall_average_b = total_b / num_pixels
+
+    # Print the overall average RGB values
+    print("Overall average RGB values:")
+    print(f"R={overall_average_r:.2f}, G={overall_average_g:.2f}, B={overall_average_b:.2f}")
+    avg_ph_col = [overall_average_r, overall_average_g, overall_average_b]
+
+    return avg_ph_col
+
+def visualize_kernels(resized_image, kernel_list):
+    plt.imshow(resized_image, cmap='gray')
+    for kernel in kernel_list:
+        min_row, max_row, min_col, max_col = kernel
+        for row_offset in range(min_row, max_row): 
+            for col_offset in range(min_col, max_col):  
+                plt.scatter(col_offset, row_offset, color='red', marker='s', s=1)  
+    plt.xlabel('Column')
+    plt.ylabel('Row')
+    plt.title('Kernels On the Resized Image')
+    plt.show()
+
+def get_strip_values(filename):
+    [resized_img, h, w] = read_and_resize(filename)
+    avg_ph_rgb = ph_strip_finder(resized_img, h, w)
+    avg_calc_rgb = calc_strip_finder(resized_img, h, w)
+    return avg_ph_rgb, avg_calc_rgb
